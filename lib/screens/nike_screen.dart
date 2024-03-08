@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nike_pokemon/screens/nike_product_screen.dart';
+import 'package:flutter_nike_pokemon/screens/pokemon_screen.dart';
 import 'package:flutter_sanity/flutter_sanity.dart';
 
 class NikeScreen extends StatefulWidget {
@@ -12,6 +13,7 @@ class NikeScreen extends StatefulWidget {
 class _NikeScreenState extends State<NikeScreen> {
    String buttonName = "Click";
   int currentIndex = 0;
+  List<dynamic> products = [];
 
   @override
   void initState(){
@@ -27,7 +29,11 @@ class _NikeScreenState extends State<NikeScreen> {
       final response = await sanityclient.fetch('*[_type=="product"]{ name }');
 
       if(response != null && response.isNotEmpty) {
-        print('data: ${response}');
+        // print('data: ${response}');
+        setState(() {
+          products = response;
+        });
+        // print(products);
       }
       else
       {
@@ -73,14 +79,20 @@ class _NikeScreenState extends State<NikeScreen> {
               }));
               
             },
-            child: Image.asset('images/Akuma.jpg'),
+            child: Text('name'),
             )
             
                     ]),
           )
           :
           Container(
-            child: Text('Pokémon')
+            child:  ListView.builder(
+        itemCount: products.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(products[index]['name']),
+          );
+  }),
           )
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -102,6 +114,10 @@ class _NikeScreenState extends State<NikeScreen> {
                 setState(() {
                   currentIndex = index;
                 });
+              //   Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context){
+              //   return const PokemonScreen();
+              // }));
+              
               },
         ),
       );
